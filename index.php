@@ -1,8 +1,5 @@
 <?php
 session_start();
-//var_dump($_SESSION["user"]);
-// $code = $_SESSION['user'];
-//echo $code ;
   include './config.php';
 ?>
 <!DOCTYPE html>
@@ -27,7 +24,6 @@ session_start();
     </style>
   </head>
   <body>
-   <!--  <a href='./register.php'>Войдите на сайт</a> -->
     <?php
 // подключение к db
       try {
@@ -42,12 +38,7 @@ session_start();
         exit();
       }
 
-
-        // $sql3 = "SELECT login, id FROM user ";
-        // $statement3 = $pdo->prepare($sql3);
-        // $statement3->execute();
 $userId = $_SESSION['id'];
-// var_dump($userId);(int)
 $userId = (integer)$userId;
 var_dump($userId);
         $sql2 = 'SELECT login, id FROM user';
@@ -57,9 +48,7 @@ var_dump($userId);
         while ($rows = $statements->fetch(PDO::FETCH_ASSOC)) {
           $results[] = $rows;
         }
-
-       // var_dump($results);
-       // var_dump($_SESSION["user"]);
+    
         if($_SESSION["user"] === NULL){
           ?> 
           <a href='./register.php'>Войдите на сайт</a>
@@ -68,15 +57,6 @@ var_dump($userId);
         } 
         $user = $_SESSION["user"];
         echo "<h1>Здравствуйте, $user! Вот ваш список дел:</h1>";
-       //  foreach ($results as $keys => $values) {
-       // //var_dump($values['login']);
-       //   $loginUser[] = $values['login'];
-       //  }
-       // var_dump($loginUser);
-            //         echo $loginUser;
-            // foreach ($loginUser as $keyloginUser => $valueloginUser) {
-            // $valueloginUser;  # code...
-            // }
     ?>
     <form method="POST">
       <input type="text" name="description" placeholder="Описание задачи" value="">
@@ -95,13 +75,7 @@ var_dump($userId);
       </tr>
       <?php
  //вывод всех данных
-      //SELECT * FROM task JOIN user ON user.login="log"
-// SELECT * FROM `user` WHERE login ="log"
-    //  "'. escape_str($_POST['email']) .'"
       $sql = 'SELECT * FROM task JOIN user ON user.id=task.user_id WHERE user.id="'.$userId.'"';
-       // $sql = 'SELECT * FROM task JOIN user  WHERE user.id="'.$userId.'"';// WHERE task.user_id=user.id";
-     // $sql = 'SELECT * FROM task JOIN user ON user.logo= "'. $user .'" ';
-     // $sql = "SELECT * FROM task JOIN user  WHERE user.logo=$user";
         $statement = $pdo->prepare($sql);
         $statement->execute();
 
@@ -117,9 +91,6 @@ var_dump($userId);
           } else{
             $is_done = 'Выполнено';
           }
-
-         // var_dump($value['login']);
-
       ?>
 
           <tr>
@@ -136,18 +107,14 @@ var_dump($userId);
         <option value="<?=$values['id'];?>"><?=$values['login'];?></option>
  <?php 
 } 
-//?assigned_user_id=user_5_task_423&assign=Переложить+ответственность
  ?>
              </select>  <input type='submit' name='assign' value='Переложить ответственность' /></form></td>
-            <!-- <a href="?id=<?=$id;?>&action=edit">Изменить</a> -->
           </tr>
 
       <?php
    
         }
       var_dump($_POST);
-         // var_dump($log);
-
         if(count($_POST > 0)){
           $description = trim($_POST['description']);
           $description = htmlspecialchars($description);
@@ -158,13 +125,10 @@ var_dump($userId);
             $query = $pdo->prepare('INSERT INTO `task` (`id`,`user_id`,`assigned_user_id`, `description`, `is_done`, `date_added`) VALUES (NULL,"'.$userId.'", "'.$userId.'",?, ?, CURRENT_TIMESTAMP)');
             $params = [$description, $is_done];
             $query->execute($params);
-            //header("Location: index.php");
-            //exit();
           }
         }
 
         $idEdit = $_GET["id"];
-        //$idEdit = trim($idEdit);
         $idEdit = intval($idEdit);
 // Удалить
         if($_GET["action"] ==='delete'){
